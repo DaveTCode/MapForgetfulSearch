@@ -1,6 +1,7 @@
-from Map import Map
+from Actor import Actor
 from MapLoader import MapLoader
 import pygame
+from pygame.locals import *
 from Renderer import Renderer
 import sys
 
@@ -10,28 +11,30 @@ class Game():
         self.renderer = None
         self.clock = None
 
-    def setup_game(self):
+    def setup(self):
         pygame.init()
         pygame.display.set_caption("Map Search Test - David Tyler (2013)")
-        screen = pygame.display.set_mode((640, 480)) #TODO: Config options
+        pygame.event.set_allowed([QUIT, KEYDOWN])
+        screen = pygame.display.set_mode((1280, 960)) #TODO: Config options
         
         self.renderer = Renderer(screen)
         self.clock = pygame.time.Clock()
         self.tile_map = MapLoader().loadMap("../res/maps/map.txt")
+        self.actor = Actor(self.tile_map, pygame.time.get_ticks())
 
-    def run_game(self):
+    def run(self):
         if (self.renderer != None and self.clock != None):
             while True:
-                time_passed = self.clock.tick(30)
+                self.clock.tick(30)
             
-                # TODO: Moves event handling
+                # TODO: Move event handling
                 for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
+                    if event.type == QUIT:
                         self.exit_game()
             
-#                update_objects()
+                self.actor.update(pygame.time.get_ticks())
             
-                self.renderer.draw_game(self.tile_map)
+                self.renderer.draw_game(self.tile_map, self.actor)
             
     def exit_game(self, rc = 0):
         pygame.quit()
@@ -39,5 +42,5 @@ class Game():
 
 if __name__ == "__main__":
     game = Game()
-    game.setup_game()
-    game.run_game()
+    game.setup()
+    game.run()

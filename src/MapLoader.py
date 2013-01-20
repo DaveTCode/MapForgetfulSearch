@@ -3,9 +3,7 @@ from TileTypes import *
 
 class MapLoader():
     
-    def loadMap(self, filename):
-        m = None
-        
+    def loadMap(self, filename):        
         with open(filename, "r") as map_file:
             parts = map_file.readline().split(",")
             width = int(parts[0])
