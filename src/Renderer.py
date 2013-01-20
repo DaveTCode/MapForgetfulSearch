@@ -1,3 +1,4 @@
+from ActorMap import ActorMapTileType
 import pygame
 from TileTypes import *
 
@@ -10,6 +11,8 @@ class Renderer():
     GOAL_COLOR = (0, 255, 0)
     ACTOR_COLOR = (255, 0, 0)
     BLANK_COLOR = (0, 0, 0)
+    ACTOR_BLANK_COLOR = (50, 0, 0, 120)
+    ACTOR_WALL_COLOR = (0, 50, 0, 120)
     
     def __init__(self, screen):
         self.screen = screen
@@ -18,6 +21,7 @@ class Renderer():
         self.screen.fill(Renderer.BLANK_COLOR)
         self.draw_grid_lines(tile_map)
         self.draw_map(tile_map)
+        self.draw_actor_overlay(actor)
         self.draw_goal(actor)
         self.draw_actor(actor)
         
@@ -49,8 +53,19 @@ class Renderer():
         self._draw_colored_tile(Renderer.ACTOR_COLOR, actor.x, actor.y)
         
     def draw_goal(self, actor):
-        x, y = actor.goal
-        self._draw_colored_tile(Renderer.GOAL_COLOR, x, y)
+        self._draw_colored_tile(Renderer.GOAL_COLOR, actor.goal.x, actor.goal.y)
+        
+    def draw_actor_overlay(self, actor):
+        for x in range(actor.actor_map.width):
+            for y in range(actor.actor_map.height):
+                color = None
+                if actor.actor_map[y][x].type == ActorMapTileType.EMPTY:
+                    color = Renderer.ACTOR_BLANK_COLOR
+                elif actor.actor_map[y][x].type == ActorMapTileType.WALL:
+                    color = Renderer.ACTOR_WALL_COLOR
+                    
+                if color != None:
+                    self._draw_colored_tile(color, x, y)
         
     def _draw_colored_tile(self, color, tile_x, tile_y):
         self.screen.fill(color, pygame.Rect((tile_x * Renderer.TILE_WIDTH) + 1, 
