@@ -9,12 +9,15 @@ class Actor():
         self.x = 0
         self.y = 0
         self._find_initial_position()
+        self.goal = (22, 22)
         
     def _find_initial_position(self):
         self.x = 16 # TODO - Better way of finding random free spot in map
         self.y = 16
         
+    def set_goal(self, x, y):
+        self.goal = (x, y)
+        
     def update(self, ticks):
         if (ticks - self.last_updated_ticks) > Actor.TICK_SPEED:
             self.last_updated_ticks = ticks
-            pass

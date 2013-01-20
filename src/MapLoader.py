@@ -13,7 +13,6 @@ class MapLoader():
             r = 0
             for line in map_file:
                 row = [TileTypes()[t] for t in line.split(",")]
-                print row
                 m.set_row(r, row)
                 r = r + 1
 
