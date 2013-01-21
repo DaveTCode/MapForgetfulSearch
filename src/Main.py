@@ -1,5 +1,6 @@
 from Actor import Actor
 from MapLoader import MapLoader
+import MapCreator
 import pygame
 from pygame.locals import *
 from Renderer import Renderer
@@ -19,7 +20,8 @@ class Game():
         screen = pygame.display.set_mode((1280, 960)) #TODO: Config options
         
         self.clock = pygame.time.Clock()
-        self.tile_map = MapLoader().loadMap("../res/maps/map.txt")
+        #self.tile_map = MapLoader().loadMap("../res/maps/map.txt")
+        self.tile_map = MapCreator.create_maze(48, 48)
         self.actor = Actor(self.tile_map, pygame.time.get_ticks())
         self.tile_screen_converter = TileScreenConverter(20, 20)
         self.renderer = Renderer(screen, self.tile_screen_converter)
