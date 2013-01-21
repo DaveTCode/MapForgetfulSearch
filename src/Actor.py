@@ -22,18 +22,23 @@ class Actor():
         self.goal = self.actor_map[y][x]
         
     def update(self, ticks):
-        if (ticks - self.last_updated_ticks) > Actor.TICK_SPEED:
-            self.update_visible_tiles(ticks)
-            
+        if (ticks - self.last_updated_ticks) > Actor.TICK_SPEED:            
             if self.goal.x is not self.x or self.goal.y is not self.y:
-                path_to_goal = self.create_path_to_goal()
+                path_to_goal = self.create_path_to_goal(self.goal)
             
                 if (path_to_goal is not None):
                     self.x = path_to_goal[0].x
                     self.y = path_to_goal[0].y
                 else:
-                    print "No path found"
+                    next_cell = self.explore()
+                    if next_cell == None:
+                        print "Stuck with no valid adjacent cells"
+                    else:
+                        self.x = next_cell.x
+                        self.y = next_cell.y
             
+            self.actor_map[self.y][self.x].last_visited = ticks
+            self.update_visible_tiles(ticks)
             self.last_updated_ticks = ticks
             
     def update_visible_tiles(self, ticks): # TODO: Variable view distance?
@@ -42,7 +47,39 @@ class Actor():
                 if self.x + x >= 0 and self.x + x < self.tile_map.width and self.y + y >= 0 and self.y + y < self.tile_map.height:
                     self.actor_map[self.y + y][self.x + x].set_type(self.tile_map[self.y + y][self.x + x], ticks)
                     
-    def create_path_to_goal(self):
+    def explore(self):
+        '''
+            If there isn't a direct path to the goal then the actor runs in 
+            explore mode until a path exists.
+            
+            In explore mode the actor chooses a valid adjacent tile as follows:
+            1 - Unexplored squares take precedence
+            2 - Head towards the goal to break ties
+            3 - Otherwise head along path travelled least recently
+            4 - Head towards the goal to break ties again
+        '''
+        def score_tile_for_exploration(tile):
+            score = tile.last_visited
+            
+            if not ((tile.x > self.x and tile.x < self.goal.x) or 
+                    (tile.x > self.goal.x and tile.x < self.x)):
+                score = score + 0.2
+                
+            if not ((tile.y > self.y and tile.y < self.goal.y) or 
+                    (tile.y > self.goal.y and tile.y < self.y)):
+                score = score + 0.2 
+        
+            return score
+        
+        adj_cells = [t for t in self.actor_map.get_adjacent_cells(self.x, self.y) if t.type == ActorMapTileType.EMPTY]
+        
+        if len(adj_cells) == 0:
+            return None
+        else:
+            return min(adj_cells, key=lambda t: score_tile_for_exploration(t))
+        
+    
+    def create_path_to_goal(self, goal):
         '''
             Uses A* algorithm to find a path from the current location to the 
             goal. If no path exists then this returns None.
@@ -52,7 +89,7 @@ class Actor():
         closed_set = set()
         
         def get_heuristic(cell):
-            return (abs(self.goal.x - cell.x) + abs(self.goal.y - cell.y)) * 10
+            return (abs(goal.x - cell.x) + abs(goal.y - cell.y)) * 10
         
         def update_cell(adj, cell):
             adj.g = cell.g + 10

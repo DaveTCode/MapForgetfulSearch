@@ -3,7 +3,7 @@ class ActorMap():
     
     def __init__(self, tile_map):
         self.actual_tile_map = tile_map
-        self.known_tile_map = [[ActorMapTile(ActorMapTileType.UNKNOWN, -1, x, y) for x in range(tile_map.width)] * tile_map.height for y in range(tile_map.height)]
+        self.known_tile_map = [[ActorMapTile(ActorMapTileType.UNKNOWN, -1, x, y) for x in range(tile_map.width)] for y in range(tile_map.height)]
         self.width = tile_map.width
         self.height = tile_map.height
         
@@ -28,6 +28,7 @@ class ActorMapTile():
     def __init__(self, tile_type, t, x, y):
         self.type = tile_type
         self.last_discovered = t
+        self.last_visited = t
         self.x = x
         self.y = y
         
