@@ -3,6 +3,7 @@ from MapLoader import MapLoader
 import pygame
 from pygame.locals import *
 from Renderer import Renderer
+from TileScreenConverter import TileScreenConverter
 import sys
 
 class Game():
@@ -17,10 +18,11 @@ class Game():
         pygame.event.set_allowed([QUIT, KEYDOWN])
         screen = pygame.display.set_mode((1280, 960)) #TODO: Config options
         
-        self.renderer = Renderer(screen)
         self.clock = pygame.time.Clock()
         self.tile_map = MapLoader().loadMap("../res/maps/map.txt")
         self.actor = Actor(self.tile_map, pygame.time.get_ticks())
+        self.tile_screen_converter = TileScreenConverter(20, 20)
+        self.renderer = Renderer(screen, self.tile_screen_converter)
 
     def run(self):
         if (self.renderer != None and self.clock != None):
@@ -31,6 +33,9 @@ class Game():
                 for event in pygame.event.get():
                     if event.type == QUIT:
                         self.exit_game()
+                    elif event.type == MOUSEBUTTONDOWN and event.button == 1:
+                        x, y = self.tile_screen_converter.screen_to_tile(event.pos[0], event.pos[1])
+                        self.actor.set_goal(x, y)
             
                 self.actor.update(pygame.time.get_ticks())
             

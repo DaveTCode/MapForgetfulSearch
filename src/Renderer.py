@@ -4,8 +4,6 @@ from TileTypes import *
 
 class Renderer():
 
-    TILE_WIDTH  = 20
-    TILE_HEIGHT = 20
     WALL_COLOR = (100, 100, 100)
     GRID_LINE_COLOR = (255, 255, 255)
     GOAL_COLOR = (0, 255, 0)
@@ -14,8 +12,9 @@ class Renderer():
     ACTOR_BLANK_COLOR = (50, 0, 0, 120)
     ACTOR_WALL_COLOR = (0, 50, 0, 120)
     
-    def __init__(self, screen):
+    def __init__(self, screen, tile_screen_converter):
         self.screen = screen
+        self.tile_screen_converter = tile_screen_converter
     
     def draw_game(self, tile_map, actor):
         self.screen.fill(Renderer.BLANK_COLOR)
@@ -31,14 +30,14 @@ class Renderer():
         for x in range(tile_map.width):
             pygame.draw.line(self.screen, 
                              Renderer.GRID_LINE_COLOR, 
-                             (x * Renderer.TILE_WIDTH, 0), 
-                             (x * Renderer.TILE_WIDTH, tile_map.height * Renderer.TILE_HEIGHT))
+                             self.tile_screen_converter.tile_to_screen(x, 0), 
+                             self.tile_screen_converter.tile_to_screen(x, tile_map.height))
             
         for y in range(tile_map.height):
             pygame.draw.line(self.screen, 
                              Renderer.GRID_LINE_COLOR, 
-                             (0, y * Renderer.TILE_HEIGHT), 
-                             (tile_map.width * Renderer.TILE_WIDTH, y * Renderer.TILE_HEIGHT))
+                             self.tile_screen_converter.tile_to_screen(0, y), 
+                             self.tile_screen_converter.tile_to_screen(tile_map.width, y))
     
     def draw_map(self, tile_map):
         for x in range(tile_map.width):
@@ -68,8 +67,8 @@ class Renderer():
                     self._draw_colored_tile(color, x, y)
         
     def _draw_colored_tile(self, color, tile_x, tile_y):
-        self.screen.fill(color, pygame.Rect((tile_x * Renderer.TILE_WIDTH) + 1, 
-                                            (tile_y * Renderer.TILE_HEIGHT) + 1,
-                                            Renderer.TILE_WIDTH - 2,
-                                            Renderer.TILE_HEIGHT - 2))
+        (x, y) = self.tile_screen_converter.tile_to_screen(tile_x, tile_y, 1, 1)
+        self.screen.fill(color, pygame.Rect(x, y,
+                                            self.tile_screen_converter.tile_width - 2,
+                                            self.tile_screen_converter.tile_height - 2))
         
