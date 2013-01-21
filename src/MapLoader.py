@@ -12,7 +12,7 @@ class MapLoader():
             m = Map(width, height)
             r = 0
             for line in map_file:
-                row = [TileTypes()[t] for t in line.split(",")]
+                row = [TileTypes()[t] for t in line.strip('\n').split(",")]
                 m.set_row(r, row)
                 r = r + 1
 
