@@ -61,12 +61,12 @@ class Actor():
         def score_tile_for_exploration(tile):
             score = tile.last_visited
             
-            if not ((tile.x > self.x and tile.x < self.goal.x) or 
-                    (tile.x > self.goal.x and tile.x < self.x)):
+            if not ((tile.x >= self.x and tile.x <= self.goal.x) or 
+                    (tile.x >= self.goal.x and tile.x <= self.x)):
                 score = score + 0.2
                 
-            if not ((tile.y > self.y and tile.y < self.goal.y) or 
-                    (tile.y > self.goal.y and tile.y < self.y)):
+            if not ((tile.y >= self.y and tile.y <= self.goal.y) or 
+                    (tile.y >= self.goal.y and tile.y <= self.y)):
                 score = score + 0.2 
         
             return score

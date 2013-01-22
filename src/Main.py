@@ -1,6 +1,7 @@
 from Actor import Actor
 from MapLoader import MapLoader
-import MapCreator
+import MapGeneration.MazeMapCreator as MazeMapCreator
+import MapGeneration.CityMapCreator as CityMapCreator
 import pygame
 from pygame.locals import *
 from Renderer import Renderer
@@ -21,7 +22,8 @@ class Game():
         
         self.clock = pygame.time.Clock()
         #self.tile_map = MapLoader().loadMap("../res/maps/map.txt")
-        self.tile_map = MapCreator.create_maze(48, 48)
+        #self.tile_map = MazeMapCreator.create_maze(48, 48)
+        self.tile_map = CityMapCreator.create_city(48, 48)
         self.actor = Actor(self.tile_map, pygame.time.get_ticks())
         self.tile_screen_converter = TileScreenConverter(20, 20)
         self.renderer = Renderer(screen, self.tile_screen_converter)

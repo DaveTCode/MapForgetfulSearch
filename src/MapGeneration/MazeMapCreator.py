@@ -5,7 +5,7 @@ from numpy.random import random_integers as rand
  
 def create_maze(width, height, complexity=.75, density=.75):
     '''
-        Wikipedia algorithm for maze creation
+        Wikipedia algorithm for maze creation. Not written by me at all.
     '''
     shape = ((height // 2) * 2 + 1, (width // 2) * 2 + 1)
 
