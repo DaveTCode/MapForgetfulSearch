@@ -12,7 +12,8 @@ class Actor():
         self.x = 0
         self.y = 0
         self._find_initial_position() 
-        self.goal = self.actor_map[22][22]        
+        self.goal = self.actor_map[22][22]
+        self.update_visible_tiles(0)
         
     def _find_initial_position(self):
         self.x = 16 # TODO - Better way of finding random free spot in map
@@ -26,7 +27,7 @@ class Actor():
             if self.goal.x is not self.x or self.goal.y is not self.y:
                 path_to_goal = self.create_path_to_goal(self.goal)
             
-                if (path_to_goal is not None):
+                if path_to_goal:
                     self.x = path_to_goal[0].x
                     self.y = path_to_goal[0].y
                 else:
@@ -46,7 +47,7 @@ class Actor():
             for y in [-1, 0, 1]:
                 if self.x + x >= 0 and self.x + x < self.tile_map.width and self.y + y >= 0 and self.y + y < self.tile_map.height:
                     self.actor_map[self.y + y][self.x + x].set_type(self.tile_map[self.y + y][self.x + x], ticks)
-                    
+    
     def explore(self):
         '''
             If there isn't a direct path to the goal then the actor runs in 

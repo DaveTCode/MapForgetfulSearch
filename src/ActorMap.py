@@ -1,4 +1,3 @@
-
 class ActorMap():
     
     def __init__(self, tile_map):
@@ -22,6 +21,25 @@ class ActorMap():
             cells.append(self.known_tile_map[y + 1][x])
             
         return cells
+    
+    def nearest_known_cell_to_goal(self, goal, radius_to_check):
+        '''
+            Find the tile nearest to the goal with known information.
+        '''
+        for radius in range(1, min([max([goal.x, self.width - goal.x, goal.y, self.height - goal.y]), 
+                                   radius_to_check])):
+            cellsToCheck = [self.known_tile_map[y][x] 
+                            for x in range(goal.x - radius, goal.x + radius) 
+                            for y in range(goal.y - radius, goal.y + radius) 
+                            if (x != goal.x or y != goal.y) and 
+                               x >= 0 and x < self.width and 
+                               y >= 0 and y < self.height]
+            
+            for cell in cellsToCheck:
+                if cell.last_discovered > -1:
+                    return cell
+        
+        return None
         
 class ActorMapTile():
      
